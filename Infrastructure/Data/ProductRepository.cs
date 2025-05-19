@@ -48,5 +48,22 @@ namespace Infrastructure.Data
             return _context.Products
                 .Where(p => p.CategoryId == id).ToListAsync();
         }
+
+        public async Task<List<Product>> GetTopViewedProductsAsync(int count)
+        {
+            return await _context.Products
+                                 .OrderByDescending(p => p.ReviewCount)
+                                 .Take(count)
+                                 .ToListAsync();
+        }
+
+        public async Task<List<Product>> GetMostFavoritedProductsAsync(int count)
+        {
+            return await _context.Products
+                                 .OrderByDescending(p => p.FavoriteCount)
+                                 .Take(count)
+                                 .ToListAsync();
+        }
+
     }
 }

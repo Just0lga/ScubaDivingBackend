@@ -1,6 +1,7 @@
-﻿using Core.Entities;
+﻿using AutoMapper;
+using Core.Dtos;
+using Core.Entities;
 using Core.Interfaces;
-using Infrastructure.Data;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ScubaDivingWebApi.Controllers
@@ -11,30 +12,45 @@ namespace ScubaDivingWebApi.Controllers
     {
         private readonly IFavoriteRepository _favoriteRepository;
         private readonly IProductRepository _productRepository;
+        private readonly IMapper _mapper;
 
-        public FavoritesController(IFavoriteRepository favoriteRepository, IProductRepository productRepository)
+        public FavoritesController(IFavoriteRepository favoriteRepository, IProductRepository productRepository, IMapper mapper)
         {
             _favoriteRepository = favoriteRepository;
             _productRepository = productRepository;
+            _mapper = mapper;
         }
 
         [HttpGet("{userId}")]
-        public async Task<ActionResult<IReadOnlyList<Favorite>>> GetFavorites(string userId)
+        public async Task<ActionResult<List<FavoriteReadDto>>> GetFavorites(string userId)
         {
             var favorites = await _favoriteRepository.GetAllFavoritesByUserId(userId);
 
-            return Ok(favorites);
+            var favoritesDto = _mapper.Map<List<FavoriteReadDto>>(favorites);
+
+            return Ok(favoritesDto);
         }
 
         [HttpPost]
-        public async Task<ActionResult> AddFavorite([FromBody] Favorite favorite)
+        public async Task<ActionResult> AddFavorite([FromBody] FavoriteCreateDto favoriteDto)
         {
-            var existing = await _favoriteRepository.GetFavorite(favorite.UserId, favorite.ProductId);
-            if (existing != null) return Conflict("Already in favorites.");
-            var product = await _productRepository.GetProductByIdAsync(favorite.ProductId);
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var existing = await _favoriteRepository.GetFavorite(favoriteDto.UserId, favoriteDto.ProductId);
+            if (existing != null)
+                return Conflict("Already in favorites.");
+
+            var product = await _productRepository.GetProductByIdAsync(favoriteDto.ProductId);
+            if (product == null)
+                return NotFound("Product not found.");
+
             product.FavoriteCount++;
             await _productRepository.UpdateProductAsync(product);
+
+            var favorite = _mapper.Map<Favorite>(favoriteDto);
             await _favoriteRepository.AddFavorite(favorite);
+
             return Ok();
         }
 
@@ -42,13 +58,18 @@ namespace ScubaDivingWebApi.Controllers
         public async Task<ActionResult> RemoveFavorite(string userId, int productId)
         {
             var favorite = await _favoriteRepository.GetFavorite(userId, productId);
-            if (favorite == null) return NotFound();
+            if (favorite == null)
+                return NotFound();
+
             var product = await _productRepository.GetProductByIdAsync(favorite.ProductId);
-            product.FavoriteCount--;
-            await _productRepository.UpdateProductAsync(product);
-            await _favoriteRepository.AddFavorite(favorite);
+            if (product != null)
+            {
+                product.FavoriteCount--;
+                await _productRepository.UpdateProductAsync(product);
+            }
 
             await _favoriteRepository.RemoveFavorite(favorite);
+
             return NoContent();
         }
     }

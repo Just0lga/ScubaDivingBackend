@@ -12,5 +12,8 @@ namespace Core.Interfaces
         Task CreateProductAsync(Product product);
         Task UpdateProductAsync(Product product);
         Task DeleteProductAsync(Product product);
+        Task<List<Product>> GetTopViewedProductsAsync(int count);
+        Task<List<Product>> GetMostFavoritedProductsAsync(int count);
+
     }
 }

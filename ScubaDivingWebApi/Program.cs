@@ -1,7 +1,10 @@
 ﻿using Core.Entities;
 using Core.Interfaces;
 using Infrastructure.Data;
+using Infrastructure.Data.Repositories;
+using Infrastructure.Mappings;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 using ScubaDivingWebApi.Extensions;
 using System.Diagnostics;
@@ -16,6 +19,17 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.AddScoped<IAddressRepository, AddressRepository>();
 builder.Services.AddScoped<IFavoriteRepository, FavoriteRepository>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
+builder.Services.AddScoped<IProductImageRepository, ProductImageRepository>();
+builder.Services.AddScoped<IBannerRepository, BannerRepository>();
+builder.Services.AddScoped<ISearchHistoryRepository, SearchHistoryRepository>();
+
+
+
+builder.Services.AddAutoMapper(typeof(ProductProfile));
+builder.Services.AddAutoMapper(typeof(AddressProfile));
+builder.Services.AddAutoMapper(typeof(ProductImageProfile));
+
+
 
 
 // Controller ve Swagger servisleri

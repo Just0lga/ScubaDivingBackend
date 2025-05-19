@@ -22,5 +22,8 @@ namespace Core.Entities
         public int FavoriteCount { get; set; } = 0;
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
+        public ICollection<Favorite> Favorites { get; set; } = new List<Favorite>(); // ✅
+        public List<ProductImage> ProductImages { get; set; } = new();
+
     }
 }
