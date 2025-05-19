@@ -29,10 +29,9 @@ namespace Infrastructure.Data
             await _context.SaveChangesAsync();
         }
 
-        public  async Task<Address> GetAddresses(string userId)
+        public async Task<Address> GetAddress(string userId, int addressId)
         {
-            return await _context.Addresses.FirstOrDefaultAsync(b => b.UserId == userId);
-
+            return await _context.Addresses.FirstOrDefaultAsync(b => b.UserId == userId && b.Id == addressId);
         }
 
         public async Task<IReadOnlyList<Address>> GetAllAddresses(string userId)
@@ -40,7 +39,7 @@ namespace Infrastructure.Data
             return await _context.Addresses.Where(b => b.UserId == userId).ToListAsync(); ;
         }
 
-        public async Task UpdateAddress(Address address, int addressId)
+        public async Task UpdateAddress(Address address)
         {
             _context.Addresses.Update(address);
             await _context.SaveChangesAsync();

@@ -19,11 +19,8 @@ namespace Core.Entities
         public int ReviewCount { get; set; }
         public Dictionary<string, string> Features { get; set; } = new();
         public bool IsActive { get; set; } = true;
+        public int FavoriteCount { get; set; } = 0;
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
-        public List<ProductImage> Images { get; set; } = new();
-        public List<Favorite> Favorites { get; set; } = new();
-
-
     }
 }

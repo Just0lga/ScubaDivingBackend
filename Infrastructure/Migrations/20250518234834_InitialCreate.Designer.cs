@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250518123036_InitialCreate")]
+    [Migration("20250518234834_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -67,8 +67,6 @@ namespace Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId");
-
                     b.ToTable("Addresses", "scubadb");
                 });
 
@@ -94,10 +92,6 @@ namespace Infrastructure.Migrations
                         .HasColumnType("text");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ProductId");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("Favorites", "scubadb");
                 });
@@ -126,6 +120,9 @@ namespace Infrastructure.Migrations
 
                     b.Property<decimal?>("DiscountPrice")
                         .HasColumnType("numeric");
+
+                    b.Property<int>("FavoriteCount")
+                        .HasColumnType("integer");
 
                     b.Property<string>("Features")
                         .IsRequired()
@@ -366,48 +363,16 @@ namespace Infrastructure.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("ProductId")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("Url")
+                    b.Property<string>("ImageUrl")
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<int>("ProductId")
+                        .HasColumnType("integer");
+
                     b.HasKey("Id");
 
-                    b.HasIndex("ProductId");
-
                     b.ToTable("ProductImages", "scubadb");
-                });
-
-            modelBuilder.Entity("Core.Entities.Address", b =>
-                {
-                    b.HasOne("Core.Entities.User", "User")
-                        .WithMany("Adresses")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("Core.Entities.Favorite", b =>
-                {
-                    b.HasOne("Core.Entities.Product", "Product")
-                        .WithMany("Favorites")
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Core.Entities.User", "User")
-                        .WithMany("Favorites")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Product");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -459,31 +424,6 @@ namespace Infrastructure.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("ProductImage", b =>
-                {
-                    b.HasOne("Core.Entities.Product", "Product")
-                        .WithMany("Images")
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Product");
-                });
-
-            modelBuilder.Entity("Core.Entities.Product", b =>
-                {
-                    b.Navigation("Favorites");
-
-                    b.Navigation("Images");
-                });
-
-            modelBuilder.Entity("Core.Entities.User", b =>
-                {
-                    b.Navigation("Adresses");
-
-                    b.Navigation("Favorites");
                 });
 #pragma warning restore 612, 618
         }

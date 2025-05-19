@@ -17,8 +17,7 @@ namespace Infrastructure.Data
         {
             return await _context.Favorites
                 .Where(f => f.UserId == userId)
-                .Include(f => f.Product)
-                .ToListAsync();
+                .ToListAsync(); // Include kaldırıldı
         }
 
         public async Task<Favorite> GetFavorite(string userId, int productId)
@@ -29,6 +28,9 @@ namespace Infrastructure.Data
 
         public async Task AddFavorite(Favorite favorite)
         {
+            favorite.CreatedAt = DateTime.UtcNow;
+            favorite.UpdatedAt = DateTime.UtcNow;
+
             await _context.Favorites.AddAsync(favorite);
             await _context.SaveChangesAsync();
         }

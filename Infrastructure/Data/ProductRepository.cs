@@ -17,12 +17,12 @@ namespace Infrastructure.Data
 
         public async Task<Product> GetProductByIdAsync(int id)
         {
-            return await _context.Products.Include(p => p.Images).FirstOrDefaultAsync(p => p.Id == id);
+            return await _context.Products.FirstOrDefaultAsync(p => p.Id == id);
         }
 
         public async Task<IReadOnlyList<Product>> GetAllProductsAsync()
         {
-            return await _context.Products.Include(p => p.Images).ToListAsync();
+            return await _context.Products.ToListAsync();
         }
 
         public async Task CreateProductAsync(Product product)
@@ -41,6 +41,12 @@ namespace Infrastructure.Data
         {
             _context.Products.Remove(product);
             await _context.SaveChangesAsync();
+        }
+
+        public Task<List<Product>> GetProductsByCategoryId(int id)
+        {
+            return _context.Products
+                .Where(p => p.CategoryId == id).ToListAsync();
         }
     }
 }

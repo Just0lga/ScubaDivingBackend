@@ -25,9 +25,9 @@ namespace ScubaDivingWebApi.Controllers
 
         // GET: api/address/{userId}
         [HttpGet("{userId}")]
-        public async Task<ActionResult<Address>> GetAddress(string userId)
+        public async Task<ActionResult<Address>> GetAddress(string userId, int addressId)
         {
-            var address = await _addressRepository.GetAddresses(userId);
+            var address = await _addressRepository.GetAddress(userId, addressId);
             if (address == null) return NotFound();
             return Ok(address);
         }
@@ -43,12 +43,12 @@ namespace ScubaDivingWebApi.Controllers
         }
 
         // PUT: api/address/{userId}
-        [HttpPut("{userId}/{oldAddressId")]
-        public async Task<ActionResult> UpdateAddress(string userId, int oldAddressId, [FromBody] Address newAddress)
+        [HttpPut("{userId}/{addressId}")]
+        public async Task<ActionResult> UpdateAddress(string userId, int addressId, [FromBody] Address newAddress)
         {
             if (newAddress == null) return BadRequest("Address data cannot be null.");
 
-            var oldAddress = await _addressRepository.GetAddressesById(userId);
+            var oldAddress = await _addressRepository.GetAddress(userId, addressId);
             if (oldAddress == null) return NotFound("Address not found");
 
             oldAddress.Title = newAddress.Title;
@@ -64,10 +64,10 @@ namespace ScubaDivingWebApi.Controllers
         }
 
         // DELETE: api/address/{userId}
-        [HttpDelete("{userId}")]
-        public async Task<ActionResult> DeleteAddress(string userId)
+        [HttpDelete("{userId}/{addressId}")]
+        public async Task<ActionResult> DeleteAddress(string userId, int addressId)
         {
-            var address = await _addressRepository.GetAddresses(userId);
+            var address = await _addressRepository.GetAddress(userId, addressId);
             if (address == null) return NotFound("Address not found");
 
             await _addressRepository.DeleteAddress(address);

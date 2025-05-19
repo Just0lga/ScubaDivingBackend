@@ -7,10 +7,6 @@ namespace Core.Entities
     {
         [Required]
         public string UserId { get; set; }
-
-        [ForeignKey("UserId")]
-        public virtual User? User { get; set; }
-
         public string Title { get; set; }
         public string FullAddress { get; set; }
         public string City { get; set; }

@@ -32,6 +32,14 @@ namespace ScubaDivingWebApi.Controllers
             return Ok(product);
         }
 
+        [HttpGet("category/{id}")]
+        public async Task<ActionResult<List<Product>>> GetProductsByCategoryId(int id)
+        {
+            var products = await _productRepository.GetProductsByCategoryId(id);
+            if (products == null || products.Count == 0) return NotFound("No products found in this category");
+            return Ok(products);
+        }
+
         [HttpPost]
         public async Task<ActionResult> CreateProduct(Product product)
         {

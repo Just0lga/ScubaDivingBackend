@@ -12,7 +12,7 @@ namespace Core.Interfaces
         Task CreateAddress(Address address);
         Task DeleteAddress(Address address);
         Task<IReadOnlyList<Address>> GetAllAddresses(string userId);
-        Task<Address> GetAddresses(string userId, int addressId);            
-        Task UpdateAddress(Address address, int addressId);
+        Task<Address> GetAddress(string userId, int addressId);            
+        Task UpdateAddress(Address address);
     }
 }

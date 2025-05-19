@@ -16,6 +16,27 @@ namespace Infrastructure.Migrations
                 name: "scubadb");
 
             migrationBuilder.CreateTable(
+                name: "Addresses",
+                schema: "scubadb",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    UserId = table.Column<string>(type: "text", nullable: false),
+                    Title = table.Column<string>(type: "text", nullable: false),
+                    FullAddress = table.Column<string>(type: "text", nullable: false),
+                    City = table.Column<string>(type: "text", nullable: false),
+                    State = table.Column<string>(type: "text", nullable: false),
+                    Zipcode = table.Column<string>(type: "text", nullable: false),
+                    Country = table.Column<string>(type: "text", nullable: false),
+                    IsDefault = table.Column<bool>(type: "boolean", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Addresses", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "AspNetRoles",
                 schema: "scubadb",
                 columns: table => new
@@ -58,6 +79,38 @@ namespace Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Favorites",
+                schema: "scubadb",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    UserId = table.Column<string>(type: "text", nullable: false),
+                    ProductId = table.Column<int>(type: "integer", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Favorites", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ProductImages",
+                schema: "scubadb",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    ImageUrl = table.Column<string>(type: "text", nullable: false),
+                    ProductId = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ProductImages", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Products",
                 schema: "scubadb",
                 columns: table => new
@@ -75,6 +128,7 @@ namespace Infrastructure.Migrations
                     ReviewCount = table.Column<int>(type: "integer", nullable: false),
                     Features = table.Column<string>(type: "text", nullable: false),
                     IsActive = table.Column<bool>(type: "boolean", nullable: false),
+                    FavoriteCount = table.Column<int>(type: "integer", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
@@ -102,34 +156,6 @@ namespace Infrastructure.Migrations
                         column: x => x.RoleId,
                         principalSchema: "scubadb",
                         principalTable: "AspNetRoles",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Addresses",
-                schema: "scubadb",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    UserId = table.Column<string>(type: "text", nullable: false),
-                    Title = table.Column<string>(type: "text", nullable: false),
-                    FullAddress = table.Column<string>(type: "text", nullable: false),
-                    City = table.Column<string>(type: "text", nullable: false),
-                    State = table.Column<string>(type: "text", nullable: false),
-                    Zipcode = table.Column<string>(type: "text", nullable: false),
-                    Country = table.Column<string>(type: "text", nullable: false),
-                    IsDefault = table.Column<bool>(type: "boolean", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Addresses", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Addresses_AspNetUsers_UserId",
-                        column: x => x.UserId,
-                        principalSchema: "scubadb",
-                        principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -228,65 +254,6 @@ namespace Infrastructure.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
-            migrationBuilder.CreateTable(
-                name: "Favorites",
-                schema: "scubadb",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    UserId = table.Column<string>(type: "text", nullable: false),
-                    ProductId = table.Column<int>(type: "integer", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Favorites", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Favorites_AspNetUsers_UserId",
-                        column: x => x.UserId,
-                        principalSchema: "scubadb",
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Favorites_Products_ProductId",
-                        column: x => x.ProductId,
-                        principalSchema: "scubadb",
-                        principalTable: "Products",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "ProductImages",
-                schema: "scubadb",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Url = table.Column<string>(type: "text", nullable: false),
-                    ProductId = table.Column<int>(type: "integer", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ProductImages", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_ProductImages_Products_ProductId",
-                        column: x => x.ProductId,
-                        principalSchema: "scubadb",
-                        principalTable: "Products",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Addresses_UserId",
-                schema: "scubadb",
-                table: "Addresses",
-                column: "UserId");
-
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
                 schema: "scubadb",
@@ -330,24 +297,6 @@ namespace Infrastructure.Migrations
                 table: "AspNetUsers",
                 column: "NormalizedUserName",
                 unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Favorites_ProductId",
-                schema: "scubadb",
-                table: "Favorites",
-                column: "ProductId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Favorites_UserId",
-                schema: "scubadb",
-                table: "Favorites",
-                column: "UserId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_ProductImages_ProductId",
-                schema: "scubadb",
-                table: "ProductImages",
-                column: "ProductId");
         }
 
         /// <inheritdoc />
@@ -386,15 +335,15 @@ namespace Infrastructure.Migrations
                 schema: "scubadb");
 
             migrationBuilder.DropTable(
+                name: "Products",
+                schema: "scubadb");
+
+            migrationBuilder.DropTable(
                 name: "AspNetRoles",
                 schema: "scubadb");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers",
-                schema: "scubadb");
-
-            migrationBuilder.DropTable(
-                name: "Products",
                 schema: "scubadb");
         }
     }
